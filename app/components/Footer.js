@@ -27,18 +27,21 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="md:col-span-3 lg:col-start-8 lg:col-span-2 flex flex-col gap-8">
+        <div className="md:col-span-2 lg:col-start-7 lg:col-span-2 flex flex-col gap-8">
           <div>
             <h3 className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 mb-4">Enquiries</h3>
             <a href="mailto:arzunoteam@gmail.com" className="text-lg hover:text-lusion-green transition-colors">arzunoteam@gmail.com</a>
           </div>
+        </div>
+
+        <div className="md:col-span-2 lg:col-span-2 flex flex-col gap-8">
           <div>
             <h3 className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 mb-4">Call Us</h3>
             <a href="tel:+923333479586" className="text-lg hover:text-lusion-green transition-colors">+92 3333479586</a>
           </div>
         </div>
 
-        <div className="md:col-span-3 flex flex-col gap-8">
+        <div className="md:col-span-2 lg:col-span-2 flex flex-col gap-8">
           <div>
             <h3 className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 mb-4">Location</h3>
             <address className="text-lg not-italic text-lusion-dark-white">
@@ -49,9 +52,9 @@ export default function Footer() {
           <div>
             <h3 className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 mb-4">Socials</h3>
             <div className="flex flex-col gap-2">
-              <a href="#" className="text-lg hover:text-lusion-blue transition-colors">Twitter</a>
-              <a href="#" className="text-lg hover:text-lusion-blue transition-colors">Instagram</a>
-              <a href="#" className="text-lg hover:text-lusion-blue transition-colors">LinkedIn</a>
+              <a href="#" className="text-lg hover:text-lusion-green transition-colors">Twitter</a>
+              <a href="#" className="text-lg hover:text-lusion-green transition-colors">Instagram</a>
+              <a href="#" className="text-lg hover:text-lusion-green transition-colors">LinkedIn</a>
             </div>
           </div>
         </div>
