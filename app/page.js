@@ -7,16 +7,9 @@ import { ArrowRight, Star } from 'lucide-react';
 import Button from './components/Button';
 import Link from 'next/link';
 import ThreeScene from './components/ThreeScene';
+import { projects as allProjects } from '../data/projects';
+import { reviews } from '../data/reviews';
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
-
-const reviews = [
-  { text: "Arzuno completely transformed our digital presence. Their attention to detail and design aesthetics are unmatched.", author: "Sarah Jenkins", role: "CMO, TechFlow" },
-  { text: "The team delivered a world-class platform ahead of schedule. The engineering quality is simply outstanding.", author: "Marcus Thorne", role: "Founder, Quantum Startups" },
-  { text: "From brand identity to the final web application, Arzuno's cohesive vision drove a 200% increase in our conversions.", author: "Elena Rostova", role: "Director, Global Reach" }
-];
 
 export default function Home() {
   const container = useRef(null);
@@ -27,6 +20,7 @@ export default function Home() {
   const endSection = useRef(null);
   
   useGSAP(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const chars = heroText.current.querySelectorAll('.char');
     gsap.from(chars, {
       y: 100,
@@ -87,14 +81,7 @@ export default function Home() {
 
   }, { scope: container });
 
-  const projects = [
-    { title: 'Spatial Fusion', category: 'Web App', color: '#1A2FFB' },
-    { title: 'Oryzo AI', category: 'AI Platform', color: '#8832F7' },
-    { title: 'Devin Clone', category: 'SaaS', color: '#FF4C41' },
-    { title: 'Dream Machine', category: 'E-Commerce', color: '#C1FF00' },
-    { title: 'Neon Nights', category: 'Event Platform', color: '#00E5FF' },
-    { title: 'Quantum Build', category: 'Fintech', color: '#000000' }
-  ];
+  const recentProjects = allProjects.filter(p => p.isRecent);
 
   return (
     <main ref={container} className="relative w-full min-h-screen font-aeonik">
@@ -152,20 +139,26 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
-            {projects.map((project, i) => (
-              <div key={i} className="project-card group cursor-pointer flex flex-col">
+            {recentProjects.map((project, i) => (
+              <Link href={`/work/${project.slug}`} key={i} className="project-card group cursor-pointer flex flex-col">
                 <div 
                   className="w-full aspect-[4/3] rounded-[15px] mb-6 overflow-hidden relative shadow-sm border border-gray-200 group-hover:border-lusion-green transition-colors duration-300"
                   style={{ backgroundColor: project.color }}
                 >
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:scale-105 transition-transform duration-700 ease-out">
-                    <span className="font-plex-mono text-[6rem] text-white mix-blend-overlay font-bold">0{i+1}</span>
-                  </div>
+                  {project.image ? (
+                    <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:scale-105 transition-transform duration-700 ease-out">
+                        <span className="font-plex-mono text-[6rem] text-white mix-blend-overlay font-bold">0{i+1}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
                 
                 <div className="flex flex-col gap-2">
-                  <p className="font-plex-mono text-[10px] uppercase tracking-widest text-lusion-black font-semibold">{project.category}</p>
+                  <p className="font-plex-mono text-[10px] uppercase tracking-widest text-lusion-black font-semibold">{project.categoryName}</p>
                   <h4 className="text-2xl md:text-3xl tracking-tight font-medium flex items-center justify-between group-hover:text-lusion-green transition-colors duration-300">
                     {project.title}
                     <span className="text-lusion-green opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
@@ -173,7 +166,7 @@ export default function Home() {
                     </span>
                   </h4>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           
@@ -195,8 +188,8 @@ export default function Home() {
             {reviews.map((review, i) => (
               <div key={i} className="review-card bg-transparent border border-gray-300 rounded-[24px] p-10 flex flex-col justify-between hover:border-lusion-green hover:shadow-[0_10px_40px_rgba(193,255,0,0.1)] transition-all duration-300 group cursor-pointer">
                 <div>
-                  <div className="flex gap-1 mb-8 text-gray-300 group-hover:text-lusion-green transition-colors duration-300">
-                    {[...Array(5)].map((_, j) => <Star key={j} size={20} fill="currentColor" />)}
+                  <div className="flex gap-1 mb-8">
+                    {[...Array(5)].map((_, j) => <Star key={j} size={20} fill="#C1FF00" color="#C1FF00" />)}
                   </div>
                   <p className="text-xl md:text-2xl leading-relaxed font-light mb-10 text-gray-800 group-hover:text-black transition-colors duration-300">
                     "{review.text}"

@@ -6,14 +6,13 @@ import { useGSAP } from '@gsap/react';
 import { ArrowRight } from 'lucide-react';
 import Button from '../components/Button';
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, useGSAP);
-}
+
 
 export default function About() {
   const container = useRef(null);
   
   useGSAP(() => {
+    gsap.registerPlugin(ScrollTrigger);
     const chars = container.current.querySelectorAll('.title-char');
     gsap.from(chars, {
       y: 100,
