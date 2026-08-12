@@ -2,12 +2,15 @@
 import { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone, Loader2 } from 'lucide-react';
+import { sendContactEmail } from '../actions/sendContactEmail';
 
 export default function Contact() {
   const container = useRef(null);
   const formRef = useRef(null);
   const [currency, setCurrency] = useState('USD');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
   
   useGSAP(() => {
     const chars = container.current.querySelectorAll('.title-char');
@@ -42,6 +45,25 @@ export default function Contact() {
     return () => document.documentElement.classList.remove('is-white-bg');
   }, { scope: container });
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    
+    const formData = new FormData(e.target);
+    formData.append('currency', currency);
+    
+    const result = await sendContactEmail(formData);
+    
+    setIsSubmitting(false);
+    if (result.success) {
+      setSubmitStatus('success');
+      e.target.reset();
+    } else {
+      setSubmitStatus('error');
+    }
+  }
+
   return (
     <main ref={container} className="relative w-full min-h-screen font-aeonik bg-lusion-white text-lusion-black pt-40 pb-20 rounded-b-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.2)] z-10">
       
@@ -63,13 +85,25 @@ export default function Contact() {
           
           {/* Contact Form */}
           <div className="lg:col-span-7 bg-white p-8 md:p-12 rounded-[32px] shadow-sm border border-gray-100" ref={formRef}>
-            <form className="flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
               
               <div className="flex flex-col gap-3">
                 <label className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 font-bold">Your Name / Company</label>
                 <input 
                   type="text" 
+                  name="name"
+                  required
                   placeholder="John Doe @ TechFlow" 
+                  className="w-full bg-lusion-off-white text-lusion-black rounded-[16px] py-5 px-6 focus:outline-none focus:ring-2 focus:ring-lusion-blue transition-shadow text-lg placeholder-gray-400"
+                />
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <label className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 font-bold">Email or Phone Number (Optional)</label>
+                <input 
+                  type="text" 
+                  name="contact"
+                  placeholder="name@example.com or +92 3..." 
                   className="w-full bg-lusion-off-white text-lusion-black rounded-[16px] py-5 px-6 focus:outline-none focus:ring-2 focus:ring-lusion-blue transition-shadow text-lg placeholder-gray-400"
                 />
               </div>
@@ -77,6 +111,8 @@ export default function Contact() {
               <div className="flex flex-col gap-3">
                 <label className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 font-bold">Project Scope</label>
                 <textarea 
+                  name="scope"
+                  required
                   placeholder="Tell us what you want to build or grow..." 
                   rows={5}
                   className="w-full bg-lusion-off-white text-lusion-black rounded-[16px] py-5 px-6 focus:outline-none focus:ring-2 focus:ring-lusion-blue transition-shadow text-lg placeholder-gray-400 resize-none"
@@ -104,18 +140,18 @@ export default function Contact() {
                   </div>
                 </div>
                 
-                <select className="w-full bg-lusion-off-white text-lusion-black rounded-[16px] py-5 px-6 focus:outline-none focus:ring-2 focus:ring-lusion-blue transition-shadow text-lg appearance-none cursor-pointer">
+                <select name="budget" required className="w-full bg-lusion-off-white text-lusion-black rounded-[16px] py-5 px-6 focus:outline-none focus:ring-2 focus:ring-lusion-blue transition-shadow text-lg appearance-none cursor-pointer">
                   <option value="" disabled selected>Select a budget range</option>
                   {currency === 'USD' ? (
                     <>
-                      <option value="500-1k">$500 - $1,000</option>
+                      <option value="100-1k">$100 - $1,000</option>
                       <option value="1k-5k">$1,000 - $5,000</option>
                       <option value="5k-10k">$5,000 - $10,000</option>
                       <option value="10k+">$10,000+</option>
                     </>
                   ) : (
                     <>
-                      <option value="20k-50k">20,000 PKR - 50,000 PKR</option>
+                      <option value="10k-50k">10,000 PKR - 50,000 PKR</option>
                       <option value="50k-150k">50,000 PKR - 150,000 PKR</option>
                       <option value="150k-500k">150,000 PKR - 500,000 PKR</option>
                       <option value="500k+">500,000 PKR+</option>
@@ -124,9 +160,24 @@ export default function Contact() {
                 </select>
               </div>
 
-              <button className="mt-4 w-full bg-lusion-black text-white rounded-full py-6 text-lg font-bold tracking-wide uppercase hover:bg-lusion-green hover:text-black transition-colors duration-300 shadow-md hover:shadow-xl cursor-pointer">
-                Submit Inquiry
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="mt-4 w-full bg-lusion-black text-white rounded-full py-6 text-lg font-bold tracking-wide uppercase hover:bg-lusion-green hover:text-black transition-colors duration-300 shadow-md hover:shadow-xl cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? <><Loader2 className="animate-spin" size={20} /> Sending...</> : 'Submit Inquiry'}
               </button>
+
+              {submitStatus === 'success' && (
+                <div className="p-4 rounded-xl bg-lusion-green/20 text-lusion-black border border-lusion-green font-medium">
+                  Message sent successfully! For instant responses, contact our WhatsApp at +92 333 3479586.
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="p-4 rounded-xl bg-red-100 text-red-700 border border-red-200 font-medium">
+                  Failed to send message. Please try again or email us directly.
+                </div>
+              )}
             </form>
           </div>
           

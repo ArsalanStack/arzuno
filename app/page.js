@@ -87,7 +87,7 @@ export default function Home() {
     <main ref={container} className="relative w-full min-h-screen font-aeonik">
       
       {/* Hero Section */}
-      <section className="relative w-full h-screen flex flex-col justify-end section-padding pb-32 overflow-hidden">
+      <section className="relative w-full h-[100svh] md:h-screen flex flex-col justify-end section-padding pb-12 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 z-0 pointer-events-none">
           <ThreeScene />
         </div>

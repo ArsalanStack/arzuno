@@ -24,9 +24,12 @@ function RealisticEarth() {
     }
   });
 
+  const { viewport } = useThree();
+  const scale = Math.min(1, viewport.width / 8);
+
   return (
     <Float speed={1} rotationIntensity={0.5} floatIntensity={1}>
-      <group position={[0, -0.5, 0]}>
+      <group position={[0, -0.5, 0]} scale={scale}>
         <Sphere ref={earthRef} args={[2.5, 64, 64]}>
           <meshPhongMaterial map={colorMap} normalMap={normalMap} specularMap={specularMap} specular={new THREE.Color('grey')} shininess={10} />
         </Sphere>
