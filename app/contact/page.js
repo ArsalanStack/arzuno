@@ -9,8 +9,23 @@ export default function Contact() {
   const container = useRef(null);
   const formRef = useRef(null);
   const [currency, setCurrency] = useState('USD');
+  const [budget, setBudget] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+
+  const budgetOptionsUSD = [
+    { value: '< $500', label: '< $500', desc: 'Consulting, Audits, or Minor Updates' },
+    { value: '$500 - $2,500', label: '$500 - $2,500', desc: 'Landing Pages & Brand Identity' },
+    { value: '$2,500 - $5,000', label: '$2,500 - $5,000', desc: 'Full-Stack Applications' },
+    { value: '$5,000+', label: '$5,000+', desc: 'Enterprise Solutions & Retainers' }
+  ];
+
+  const budgetOptionsPKR = [
+    { value: '< 50,000 PKR', label: '< 50,000 PKR', desc: 'Design Tweaks, Audits, Minor Features' },
+    { value: '50,000 PKR - 150,000 PKR', label: '50k - 150k PKR', desc: 'Standard Web Projects' },
+    { value: '150,000 PKR - 500,000 PKR', label: '150k - 500k PKR', desc: 'Custom Portals & E-commerce' },
+    { value: '500,000+ PKR', label: '500,000+ PKR', desc: 'Full-Scale Agency Retainer' }
+  ];
   
   useGSAP(() => {
     const chars = container.current.querySelectorAll('.title-char');
@@ -47,11 +62,17 @@ export default function Contact() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!budget) {
+      alert("Please select a budget range.");
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus(null);
     
     const formData = new FormData(e.target);
     formData.append('currency', currency);
+    formData.append('budget', budget);
     
     const result = await sendContactEmail(formData);
     
@@ -119,45 +140,42 @@ export default function Contact() {
                 ></textarea>
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-6">
                 <div className="flex justify-between items-center mb-1">
-                  <label className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 font-bold">Estimated Budget</label>
-                  <div className="flex gap-2">
+                  <label className="font-plex-mono text-xs uppercase tracking-wider text-gray-500 font-bold">Anticipated Budget</label>
+                  
+                  {/* Currency Toggle */}
+                  <div className="flex bg-lusion-off-white p-1 rounded-full border border-gray-100">
                     <button 
                       type="button" 
-                      onClick={() => setCurrency('USD')}
-                      className={`font-plex-mono text-[10px] uppercase tracking-wider px-3 py-1 rounded-full border transition-colors cursor-pointer ${currency === 'USD' ? 'border-lusion-black bg-lusion-black text-white' : 'border-gray-200 text-gray-400 hover:text-lusion-black'}`}
+                      onClick={() => { setCurrency('PKR'); setBudget(''); }}
+                      className={`font-plex-mono text-[10px] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-300 ${currency === 'PKR' ? 'bg-lusion-black text-white shadow-sm' : 'text-gray-500 hover:text-lusion-black'}`}
                     >
-                      USD
+                      PKR - Local
                     </button>
                     <button 
                       type="button" 
-                      onClick={() => setCurrency('PKR')}
-                      className={`font-plex-mono text-[10px] uppercase tracking-wider px-3 py-1 rounded-full border transition-colors cursor-pointer ${currency === 'PKR' ? 'border-lusion-black bg-lusion-black text-white' : 'border-gray-200 text-gray-400 hover:text-lusion-black'}`}
+                      onClick={() => { setCurrency('USD'); setBudget(''); }}
+                      className={`font-plex-mono text-[10px] uppercase tracking-wider px-4 py-2 rounded-full transition-all duration-300 ${currency === 'USD' ? 'bg-lusion-black text-white shadow-sm' : 'text-gray-500 hover:text-lusion-black'}`}
                     >
-                      PKR
+                      USD - Int'l
                     </button>
                   </div>
                 </div>
                 
-                <select name="budget" required className="w-full bg-lusion-off-white text-lusion-black rounded-[16px] py-5 px-6 focus:outline-none focus:ring-2 focus:ring-lusion-blue transition-shadow text-lg appearance-none cursor-pointer">
-                  <option value="" disabled selected>Select a budget range</option>
-                  {currency === 'USD' ? (
-                    <>
-                      <option value="100-1k">$100 - $1,000</option>
-                      <option value="1k-5k">$1,000 - $5,000</option>
-                      <option value="5k-10k">$5,000 - $10,000</option>
-                      <option value="10k+">$10,000+</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="10k-50k">10,000 PKR - 50,000 PKR</option>
-                      <option value="50k-150k">50,000 PKR - 150,000 PKR</option>
-                      <option value="150k-500k">150,000 PKR - 500,000 PKR</option>
-                      <option value="500k+">500,000 PKR+</option>
-                    </>
-                  )}
-                </select>
+                {/* Bento Grid Options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(currency === 'USD' ? budgetOptionsUSD : budgetOptionsPKR).map((option) => (
+                    <div 
+                      key={option.value}
+                      onClick={() => setBudget(option.value)}
+                      className={`cursor-pointer border p-6 rounded-2xl flex flex-col gap-2 transition-all duration-300 ${budget === option.value ? 'border-lusion-black bg-lusion-black text-white shadow-lg scale-[1.02]' : 'border-gray-200 bg-white text-lusion-black hover:border-gray-400 hover:bg-gray-50'}`}
+                    >
+                      <h4 className="font-bold text-lg tracking-tight">{option.label}</h4>
+                      <p className={`text-sm ${budget === option.value ? 'text-gray-300' : 'text-gray-500'}`}>{option.desc}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <button 
