@@ -14,14 +14,14 @@ export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
 
   const budgetOptionsUSD = [
-    { value: '< $500', label: '< $500', desc: 'Consulting, Audits, or Minor Updates' },
+    { value: 'Under $500', label: 'Under $500', desc: 'Consulting, Audits, or Minor Updates' },
     { value: '$500 - $2,500', label: '$500 - $2,500', desc: 'Landing Pages & Brand Identity' },
     { value: '$2,500 - $5,000', label: '$2,500 - $5,000', desc: 'Full-Stack Applications' },
     { value: '$5,000+', label: '$5,000+', desc: 'Enterprise Solutions & Retainers' }
   ];
 
   const budgetOptionsPKR = [
-    { value: '< 50,000 PKR', label: '< 50,000 PKR', desc: 'Design Tweaks, Audits, Minor Features' },
+    { value: 'Under 50,000 PKR', label: 'Under 50k PKR', desc: 'Design Tweaks, Audits, Minor Features' },
     { value: '50,000 PKR - 150,000 PKR', label: '50k - 150k PKR', desc: 'Standard Web Projects' },
     { value: '150,000 PKR - 500,000 PKR', label: '150k - 500k PKR', desc: 'Custom Portals & E-commerce' },
     { value: '500,000+ PKR', label: '500,000+ PKR', desc: 'Full-Scale Agency Retainer' }
