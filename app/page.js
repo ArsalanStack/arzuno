@@ -4,12 +4,14 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Star } from 'lucide-react';
-import Button from './components/Button';
 import Link from 'next/link';
-import ThreeScene from './components/ThreeScene';
+import dynamic from 'next/dynamic';
+import Button from './components/Button';
 import { projects as allProjects } from '../data/projects';
 import { reviews } from '../data/reviews';
 
+
+const ThreeScene = dynamic(() => import('./components/ThreeScene'), { ssr: false });
 
 export default function Home() {
   const container = useRef(null);
@@ -92,11 +94,15 @@ export default function Home() {
           <ThreeScene />
         </div>
         
-        <h1 ref={heroText} className="text-[10vw] leading-none font-bold tracking-tight uppercase flex flex-wrap mix-blend-difference relative z-10 pointer-events-none">
+        {/* SEO h1 — visually hidden, crawled by Google */}
+        <h1 className="sr-only">Software Development &amp; Digital Marketing Agency in Pakistan</h1>
+        
+        {/* Visual hero text */}
+        <div ref={heroText} className="text-[10vw] leading-none font-bold tracking-tight uppercase flex flex-wrap mix-blend-difference relative z-10 pointer-events-none" aria-hidden="true">
           {Array.from("Arzuno").map((char, i) => (
             <span key={i} className="char inline-block">{char}</span>
           ))}
-        </h1>
+        </div>
         <div className="absolute right-10 bottom-32 hidden md:block z-10 pointer-events-none">
           <p className="font-plex-mono text-xs uppercase tracking-wider text-lusion-dark-white max-w-[200px]">
             We turn bold ideas into immersive digital experiences.
@@ -109,11 +115,17 @@ export default function Home() {
         <div className="max-w-screen-2xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-8">
           <div className="md:col-span-8 md:col-start-3 feature-reveal">
             <h2 className="text-5xl md:text-7xl lg:text-[5rem] font-bold leading-[1.1] mb-16 tracking-tight">
-              Bold Ideas,<br/>Brought to Life.
+              Premium Web Design Services
             </h2>
-            <p className="text-xl md:text-3xl leading-relaxed mb-16 max-w-3xl font-light text-gray-700">
-              Arzuno is a premium agency specializing in web development, marketing, and SEO. We blend high-end aesthetics with cutting-edge technology to build digital products that stand out.
+            <p className="text-xl md:text-3xl leading-relaxed mb-4 max-w-3xl font-light text-gray-700">
+              Arzuno is a premium software agency based in Pakistan. We build high performance websites, custom software, and growth marketing campaigns for businesses that want to lead their industry.
             </p>
+            {/* SEO semantic service headings */}
+            <ul className="sr-only">
+              <li><h3>Custom E Commerce Websites</h3></li>
+              <li><h3>Lead Generation &amp; SEO</h3></li>
+              <li><h3>Business Software Solutions</h3></li>
+            </ul>
             
             <Link href="/about">
               <button className="group inline-flex items-center gap-4 bg-white shadow-[0_6px_10px_#0000000A,0_2px_4px_#0000000A] px-8 py-5 rounded-full border border-gray-100 hover:shadow-lg transition-all duration-300 cursor-pointer">
@@ -132,7 +144,7 @@ export default function Home() {
       <section ref={projectsSection} className="relative z-10 w-full section-padding pt-32 pb-40 bg-lusion-white text-lusion-black">
         <div className="max-w-screen-2xl mx-auto w-full">
           <div className="flex justify-between items-end mb-16 feature-reveal border-b border-gray-200 pb-8">
-            <h3 className="text-4xl md:text-6xl font-bold tracking-tight">Recent Projects</h3>
+            <h3 className="text-4xl md:text-6xl font-bold tracking-tight">Our Software &amp; Marketing Projects</h3>
             <Link href="/work" className="hidden md:flex items-center gap-2 font-plex-mono text-sm uppercase tracking-wider text-gray-500 hover:text-lusion-green transition-colors group">
               View all <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -146,7 +158,7 @@ export default function Home() {
                   style={{ backgroundColor: project.color }}
                 >
                   {project.image ? (
-                    <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+                    <img src={project.image} alt={`${project.title} by Arzuno software agency Pakistan`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
                   ) : (
                     <>
                       <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
